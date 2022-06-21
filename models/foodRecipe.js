@@ -3,7 +3,7 @@ const db = require("../config/db");
 // Get All Recipes
 const getAllRecipes = () => {
   return new Promise((resolve, reject) => {
-    db.query(`SELECT * FROM food_recipe`, (error, result) => {
+    db.query(`SELECT * FROM food_recipe ORDER BY id DESC`, (error, result) => {
       if (error) {
         reject(error);
       } else {
@@ -13,12 +13,45 @@ const getAllRecipes = () => {
   });
 };
 
+// Get 5 recent recipe
+const getRecentRecipe = () => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT * FROM food_recipe ORDER BY id DESC LIMIT 5`,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
 // Get Recipe Detail by id
 const getRecipeDetail = (id) => {
   return new Promise((resolve, reject) => {
     db.query(
       `SELECT * FROM food_recipe WHERE id = $1`,
       [id],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+// Get Recipe Detail by name
+const getRecipeTitle = (title) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `SELECT * FROM food_recipe WHERE title = $1`,
+      [title],
       (error, result) => {
         if (error) {
           reject(error);
@@ -59,4 +92,30 @@ const deleteRecipe = (id) => {
   });
 };
 
-module.exports = { getAllRecipes, getRecipeDetail, addRecipe, deleteRecipe };
+// edit recipe by id
+const editRecipe = (props) => {
+  const { title, ingredients, food_video, food_image, id } = props;
+  return new Promise((resolve, reject) => {
+    db.query(
+      `UPDATE food_recipe SET title = $1, ingredients = $2, food_video = $3, food_image = $4 WHERE id = $5`,
+      [title, ingredients, food_video, food_image, id],
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+module.exports = {
+  getAllRecipes,
+  getRecipeDetail,
+  addRecipe,
+  deleteRecipe,
+  editRecipe,
+  getRecipeTitle,
+  getRecentRecipe,
+};

@@ -79,7 +79,7 @@ const editUser = async (req, res) => {
       password,
       image_profile,
     });
-    res.send({ message: `${name} successfully added` });
+    res.send({ message: `edit ${name} success` });
   } catch (error) {
     res.status(400).send("Something wrong, edit user fail!");
   }
