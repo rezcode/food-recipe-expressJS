@@ -89,7 +89,6 @@ const editUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    console.log(id);
     await model.deleteUser(id);
 
     res.send({
