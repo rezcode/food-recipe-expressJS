@@ -5,9 +5,8 @@ const bodyparser = require("body-parser");
 const helmet = require("helmet");
 
 // import all routes
-// const allUsers = require("./routes/user");
-// const detailUser = require("./routes/user");
 const userRoute = require("./routes/user");
+const recipeRoute = require("./routes/foodRecipe");
 
 // secure express header
 app.use(helmet());
@@ -19,6 +18,7 @@ app.use(bodyparser.urlencoded({ extended: false }));
 
 // define all Routes
 app.use("/users", userRoute);
+app.use("/recipes", recipeRoute);
 
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
