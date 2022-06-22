@@ -1,5 +1,5 @@
-require("dotenv").config();
-const Postgre = require("pg").Pool;
+require('dotenv').config();
+const Postgre = require('pg').Pool;
 
 const connection = new Postgre({
   user: process.env.DB_USERNAME,

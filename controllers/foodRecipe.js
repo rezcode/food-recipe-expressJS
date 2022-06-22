@@ -1,4 +1,4 @@
-const model = require("../models/foodRecipe");
+const model = require('../models/foodRecipe');
 
 // Get All Recipes
 const getAllRecipes = async (req, res) => {
@@ -9,7 +9,7 @@ const getAllRecipes = async (req, res) => {
       totalData: getData.rowCount,
     });
   } catch (error) {
-    res.status(400).send("Something wrong, get all recipes failed!");
+    res.status(400).send('Something wrong, get all recipes failed!');
   }
 };
 
@@ -19,15 +19,15 @@ const getRecipeDetail = async (req, res) => {
     const id = parseInt(req.params.id);
     const getData = await model.getRecipeDetail(id);
 
-    if (getData.rows == 0) {
-      res.status(400).send("Food not found");
+    if (getData.rows.length === 0) {
+      res.status(400).send('Food not found');
     } else {
       res.send({
         data: getData.rows,
       });
     }
   } catch (error) {
-    res.status(400).send("Something wrong, get recipe detail failed!");
+    res.status(400).send('Something wrong, get recipe detail failed!');
   }
 };
 
@@ -40,7 +40,7 @@ const getRecentRecipe = async (req, res) => {
       totalData: getData.rowCount,
     });
   } catch (error) {
-    res.status(400).send("Something wrong, get limit 5 recent recipe railed!");
+    res.status(400).send('Something wrong, get limit 5 recent recipe railed!');
   }
 };
 
@@ -54,27 +54,31 @@ const getRecipeTitle = async (req, res) => {
       data: getData.rows,
     });
   } catch (error) {
-    res.status(400).send("Something wrong, get recipe title failed!");
+    res.status(400).send('Something wrong, get recipe title failed!');
   }
 };
 
 // Create New Recipe
 const addRecipe = async (req, res) => {
   try {
-    const { title, ingredients, food_video, food_image, user_id } = req.body;
+    const {
+      title, ingredients, foodVideo, foodImage, userId,
+    } = req.body;
     await model.addRecipe({
       title,
       ingredients,
-      food_video,
-      food_image,
-      user_id,
+      foodVideo,
+      foodImage,
+      userId,
     });
     res.send({
       message: `${title} recipe successfully added`,
-      data: { title, ingredients, food_video, food_image, user_id },
+      data: {
+        title, ingredients, foodVideo, foodImage, userId,
+      },
     });
   } catch (error) {
-    res.status(400).send("Something wrong, add recipe failed!");
+    res.status(400).send('Something wrong, add recipe failed!');
   }
 };
 
@@ -88,7 +92,7 @@ const deleteRecipe = async (req, res) => {
       message: `data recipe with id ${id} successfully deleted`,
     });
   } catch (error) {
-    res.status(400).send("Something wrong, delete recipe failed!");
+    res.status(400).send('Something wrong, delete recipe failed!');
   }
 };
 
@@ -96,18 +100,20 @@ const deleteRecipe = async (req, res) => {
 const editRecipe = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const { title, ingredients, food_video, food_image } = req.body;
+    const {
+      title, ingredients, foodVideo, foodImage,
+    } = req.body;
 
     await model.editRecipe({
       id,
       title,
       ingredients,
-      food_video,
-      food_image,
+      foodVideo,
+      foodImage,
     });
     res.send({ message: `edit ${title} recipe success` });
   } catch (error) {
-    res.status(400).send("Something wrong, edit recipe failed!");
+    res.status(400).send('Something wrong, edit recipe failed!');
   }
 };
 

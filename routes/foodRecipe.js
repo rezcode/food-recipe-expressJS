@@ -1,25 +1,25 @@
-const Router = require("express").Router();
-const controller = require("../controllers/foodRecipe");
+const Router = require('express').Router();
+const controller = require('../controllers/foodRecipe');
 
 // Get All Recipes
-Router.get("/", controller.getAllRecipes);
+Router.get('/', controller.getAllRecipes);
 
 // Get Recipe Detail
-Router.get("/:id", controller.getRecipeDetail);
+Router.get('/:id', controller.getRecipeDetail);
 
 // Get Recent 5 Recipe
-Router.get("/find/recent", controller.getRecentRecipe);
+Router.get('/find/recent', controller.getRecentRecipe);
 
 // Get Recipe Detail by Name
-Router.get("/find/name", controller.getRecipeTitle);
+Router.get('/find/name', controller.getRecipeTitle);
 
 // Add New Recipe
-Router.post("/add", controller.addRecipe);
+Router.post('/add', controller.addRecipe);
 
 // Delete Recipe by id
-Router.delete("/:id", controller.deleteRecipe);
+Router.delete('/:id', controller.deleteRecipe);
 
 // Edit Recipe
-Router.put("/:id", controller.editRecipe);
+Router.put('/:id', controller.editRecipe);
 
 module.exports = Router;

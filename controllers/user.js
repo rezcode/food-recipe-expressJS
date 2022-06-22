@@ -1,4 +1,4 @@
-const model = require("../models/user");
+const model = require('../models/user');
 
 // Get All Users
 const getAllUser = async (req, res) => {
@@ -9,7 +9,7 @@ const getAllUser = async (req, res) => {
       totalData: getData.rowCount,
     });
   } catch (error) {
-    res.status(400).send("Something wrong, get all users fail!");
+    res.status(400).send('Something wrong, get all users fail!');
   }
 };
 
@@ -19,15 +19,15 @@ const getUserDetail = async (req, res) => {
     const id = parseInt(req.params.id);
     const getData = await model.getUserDetail(id);
 
-    if (getData.rows == 0) {
-      res.send("user not found");
+    if (getData.rows.length === 0) {
+      res.send('user not found');
     } else {
       res.send({
         data: getData.rows,
       });
     }
   } catch (error) {
-    res.status(400).send("Something wrong, get profile fail!");
+    res.status(400).send('Something wrong, get profile fail!');
   }
 };
 
@@ -41,27 +41,32 @@ const getUserEmail = async (req, res) => {
       data: getData.rows,
     });
   } catch (error) {
-    res.status(400).send("Something wrong, get user email fail!");
+    res.status(400).send('Something wrong, get user email fail!');
   }
 };
 
 // register user
 const registerUser = async (req, res) => {
   try {
-    const { name, email, phone_number, password } = req.body;
+    const {
+      name, email, phoneNumber, password, userId,
+    } = req.body;
 
     await model.registerUser({
       name,
       email,
-      phone_number,
+      phoneNumber,
       password,
+      userId,
     });
     res.send({
-      message: "user added",
-      data: { name, email, phone_number, password },
+      message: 'user added',
+      data: {
+        name, email, phoneNumber, password, userId,
+      },
     });
   } catch (error) {
-    res.status(400).send("Something wrong, register fail!");
+    res.status(400).send('Something wrong, register fail!');
   }
 };
 
@@ -69,19 +74,21 @@ const registerUser = async (req, res) => {
 const editUser = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const { name, email, phone_number, password, image_profile } = req.body;
+    const {
+      name, email, phoneNumber, password, imageProfile,
+    } = req.body;
 
     await model.editUser({
       id,
       name,
       email,
-      phone_number,
+      phoneNumber,
       password,
-      image_profile,
+      imageProfile,
     });
     res.send({ message: `edit ${name} success` });
   } catch (error) {
-    res.status(400).send("Something wrong, edit user fail!");
+    res.status(400).send('Something wrong, edit user fail!');
   }
 };
 
@@ -95,7 +102,7 @@ const deleteUser = async (req, res) => {
       message: `User id ${id} Deleted`,
     });
   } catch (error) {
-    res.status(400).send("Something wrong, delete user failed!");
+    res.status(400).send('Something wrong, delete user failed!');
   }
 };
 
