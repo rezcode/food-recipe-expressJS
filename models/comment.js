@@ -14,6 +14,27 @@ const getRecipeComment = (id) => new Promise((resolve, reject) => {
   );
 });
 
+const addCommentRecipe = (props) => new Promise((resolve, reject) => {
+  const {
+    comment,
+    idRecipe,
+    idUser,
+  } = props;
+  console.log(props);
+  db.query(
+    'INSERT INTO comment (comment, id_recipe, id_user) VALUES ($1, $2, $3)',
+    [comment, idRecipe, idUser],
+    (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    },
+  );
+});
+
 module.exports = {
   getRecipeComment,
+  addCommentRecipe,
 };
