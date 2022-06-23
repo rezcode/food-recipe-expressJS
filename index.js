@@ -8,6 +8,7 @@ const helmet = require('helmet');
 // import all routes
 const userRoute = require('./routes/user');
 const recipeRoute = require('./routes/foodRecipe');
+const commentRoute = require('./routes/comment');
 
 // secure express header
 app.use(helmet());
@@ -20,6 +21,7 @@ app.use(bodyparser.urlencoded({ extended: false }));
 // define all Routes
 app.use('/users', userRoute);
 app.use('/recipes', recipeRoute);
+app.use('/comments', commentRoute);
 
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);

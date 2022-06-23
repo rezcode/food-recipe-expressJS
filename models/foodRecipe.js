@@ -43,7 +43,7 @@ const getRecipeDetail = (id) => new Promise((resolve, reject) => {
 // Get Recipe Detail by name
 const getRecipeTitle = (title) => new Promise((resolve, reject) => {
   db.query(
-    'SELECT * FROM food_recipe WHERE title = $1',
+    'SELECT * FROM food_recipe WHERE title ~* $1',
     [title],
     (error, result) => {
       if (error) {
@@ -58,12 +58,12 @@ const getRecipeTitle = (title) => new Promise((resolve, reject) => {
 // Create new Recipe
 const addRecipe = (props) => {
   const {
-    title, ingredients, foodVideo, foodImage, userId,
+    title, ingredients, foodVideo, foodImage, id,
   } = props;
   return new Promise((resolve, reject) => {
     db.query(
       'INSERT INTO food_recipe (title, ingredients, food_video, food_image, user_id) VALUES ($1, $2, $3, $4, $5)',
-      [title, ingredients, foodVideo, foodImage, userId],
+      [title, ingredients, foodVideo, foodImage, id],
       (error, result) => {
         if (error) {
           reject(error);

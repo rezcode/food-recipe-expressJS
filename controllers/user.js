@@ -16,7 +16,7 @@ const getAllUser = async (req, res) => {
 // Get User Detail by id
 const getUserDetail = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const getData = await model.getUserDetail(id);
 
     if (getData.rows.length === 0) {
@@ -45,11 +45,24 @@ const getUserEmail = async (req, res) => {
   }
 };
 
+// Get User Recipe
+const getUserRecipe = async (req, res) => {
+  try {
+    const id = parseInt(req.body.id, 10);
+    const getData = await model.getUserRecipe(id);
+    res.send({
+      data: getData.rows,
+    });
+  } catch (error) {
+    res.status(400).send('Something wrong, get user recipe fail!');
+  }
+};
+
 // register user
 const registerUser = async (req, res) => {
   try {
     const {
-      name, email, phoneNumber, password, userId,
+      name, email, phoneNumber, password, imageProfile,
     } = req.body;
 
     await model.registerUser({
@@ -57,12 +70,12 @@ const registerUser = async (req, res) => {
       email,
       phoneNumber,
       password,
-      userId,
+      imageProfile,
     });
     res.send({
       message: 'user added',
       data: {
-        name, email, phoneNumber, password, userId,
+        name, email, phoneNumber, password, imageProfile,
       },
     });
   } catch (error) {
@@ -73,7 +86,7 @@ const registerUser = async (req, res) => {
 // Edit user by id
 const editUser = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const {
       name, email, phoneNumber, password, imageProfile,
     } = req.body;
@@ -95,12 +108,15 @@ const editUser = async (req, res) => {
 // Delete user by id
 const deleteUser = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    await model.deleteUser(id);
-
-    res.send({
-      message: `User id ${id} Deleted`,
-    });
+    const id = parseInt(req.params.id, 10);
+    const getData = await model.deleteUser(id);
+    if (getData.rowCount === 1) {
+      res.send({
+        message: `User id ${id} Deleted`,
+      });
+    } else {
+      res.status(404).send('user not found');
+    }
   } catch (error) {
     res.status(400).send('Something wrong, delete user failed!');
   }
@@ -113,4 +129,5 @@ module.exports = {
   registerUser,
   editUser,
   deleteUser,
+  getUserRecipe,
 };

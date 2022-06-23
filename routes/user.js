@@ -10,11 +10,14 @@ Router.get('/:id', controller.getUserDetail);
 // Get User Detail by email
 Router.get('/find/email', controller.getUserEmail);
 
+// Get User Recipe
+Router.get('/find/recipe', controller.getUserRecipe);
+
 // Register new User
 Router.post('/register', controller.registerUser);
 
 // Edit user
-Router.put('/:id', controller.editUser);
+Router.patch('/:id', controller.editUser);
 
 // Delete User
 Router.delete('/:id', controller.deleteUser);

@@ -25,8 +25,23 @@ const getUserDetail = (id) => new Promise((resolve, reject) => {
 // Get User Detail by email
 const getUserEmail = (email) => new Promise((resolve, reject) => {
   db.query(
-    'SELECT * FROM users WHERE email = $1',
+    'SELECT * FROM users WHERE email ~* $1',
     [email],
+    (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    },
+  );
+});
+
+// Get User Recipe
+const getUserRecipe = (id) => new Promise((resolve, reject) => {
+  db.query(
+    'SELECT food_recipe.*, users.name, users.image_profile FROM food_recipe LEFT JOIN users ON users.id = food_recipe.user_id WHERE food_recipe.user_id = $1',
+    [id],
     (error, result) => {
       if (error) {
         reject(error);
@@ -40,12 +55,12 @@ const getUserEmail = (email) => new Promise((resolve, reject) => {
 // Register new user
 const registerUser = (props) => {
   const {
-    name, email, phoneNumber, password,
+    name, email, phoneNumber, password, imageProfile,
   } = props;
   return new Promise((resolve, reject) => {
     db.query(
-      'INSERT INTO users (name, email, phone_number, password) VALUES ($1, $2, $3, $4)',
-      [name, email, phoneNumber, password],
+      'INSERT INTO users (name, email, phone_number, password, image_profile) VALUES ($1, $2, $3, $4, $5)',
+      [name, email, phoneNumber, password, imageProfile],
       (error, result) => {
         if (error) {
           reject(error);
@@ -68,7 +83,6 @@ const editUser = (props) => {
       [name, email, phoneNumber, password, imageProfile, id],
       (error, result) => {
         if (error) {
-          console.log(props.id);
           reject(error);
         } else {
           resolve(result);
@@ -80,11 +94,17 @@ const editUser = (props) => {
 
 // Delete user by id
 const deleteUser = (id) => new Promise((resolve, reject) => {
-  db.query('DELETE FROM users WHERE id = $1', [id], (error, result) => {
-    if (error) {
-      reject(error);
+  db.query('SELECT * FROM users WHERE id = $1', [id], (err, res) => {
+    if (err) {
+      reject(err);
     } else {
-      resolve(result);
+      db.query('DELETE FROM users WHERE id = $1', [id], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
     }
   });
 });
@@ -96,4 +116,5 @@ module.exports = {
   registerUser,
   editUser,
   deleteUser,
+  getUserRecipe,
 };

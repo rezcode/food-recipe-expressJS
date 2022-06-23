@@ -16,7 +16,7 @@ const getAllRecipes = async (req, res) => {
 // Get Recipes Detail by id
 const getRecipeDetail = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const getData = await model.getRecipeDetail(id);
 
     if (getData.rows.length === 0) {
@@ -62,19 +62,20 @@ const getRecipeTitle = async (req, res) => {
 const addRecipe = async (req, res) => {
   try {
     const {
-      title, ingredients, foodVideo, foodImage, userId,
+      title, ingredients, foodVideo, foodImage,
     } = req.body;
+    const id = parseInt(req.body.userId, 10);
     await model.addRecipe({
       title,
       ingredients,
       foodVideo,
       foodImage,
-      userId,
+      id,
     });
     res.send({
       message: `${title} recipe successfully added`,
       data: {
-        title, ingredients, foodVideo, foodImage, userId,
+        title, ingredients, foodVideo, foodImage, id,
       },
     });
   } catch (error) {
@@ -85,11 +86,11 @@ const addRecipe = async (req, res) => {
 // Delete Recipe by id
 const deleteRecipe = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     await model.deleteRecipe(id);
 
     res.send({
-      message: `data recipe with id ${id} successfully deleted`,
+      message: `recipe id ${id} successfully deleted`,
     });
   } catch (error) {
     res.status(400).send('Something wrong, delete recipe failed!');
@@ -99,7 +100,7 @@ const deleteRecipe = async (req, res) => {
 // edit recipe
 const editRecipe = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const {
       title, ingredients, foodVideo, foodImage,
     } = req.body;
