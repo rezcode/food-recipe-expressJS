@@ -20,6 +20,6 @@ Router.post('/add', controller.addRecipe);
 Router.delete('/:id', controller.deleteRecipe);
 
 // Edit Recipe
-Router.put('/:id', controller.editRecipe);
+Router.patch('/:id', controller.editRecipe);
 
 module.exports = Router;

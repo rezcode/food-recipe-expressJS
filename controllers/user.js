@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 const model = require('../models/user');
 
 // Get All Users
@@ -16,14 +17,14 @@ const getAllUser = async (req, res) => {
 // Get User Detail by id
 const getUserDetail = async (req, res) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id);
     const getData = await model.getUserDetail(id);
 
     if (getData.rows.length === 0) {
       res.send('user not found');
     } else {
       res.send({
-        data: getData.rows,
+        message: 'Successfully retrieved data', data: getData.rows,
       });
     }
   } catch (error) {
@@ -36,7 +37,6 @@ const getUserEmail = async (req, res) => {
   try {
     const { email } = req.body;
     const getData = await model.getUserEmail(email);
-
     res.send({
       data: getData.rows,
     });
@@ -64,20 +64,26 @@ const registerUser = async (req, res) => {
     const {
       name, email, phoneNumber, password, imageProfile,
     } = req.body;
-
-    await model.registerUser({
-      name,
-      email,
-      phoneNumber,
-      password,
-      imageProfile,
-    });
-    res.send({
-      message: 'user added',
-      data: {
-        name, email, phoneNumber, password, imageProfile,
-      },
-    });
+    const checkUserEmail = await model.getUserEmail(email);
+    if (checkUserEmail.rowCount === 1) {
+      res.send('email already exist');
+    } else if (name === '' || email === '' || phoneNumber === '' || password === '') {
+      res.status(400).send('Name, email, phoneNumber, password must be fullfiled');
+    } else {
+      await model.registerUser({
+        name,
+        email,
+        phoneNumber,
+        password,
+        imageProfile,
+      });
+      res.send({
+        message: 'user added',
+        data: {
+          name, email, phoneNumber, password, imageProfile,
+        },
+      });
+    }
   } catch (error) {
     res.status(400).send('Something wrong, register fail!');
   }

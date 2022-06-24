@@ -75,12 +75,12 @@ const registerUser = (props) => {
 // Edit User by id
 const editUser = (props) => {
   const {
-    id, name, email, phoneNumber, password, imageProfile,
+    name, email, phoneNumber, password, imageProfile,
   } = props;
   return new Promise((resolve, reject) => {
     db.query(
-      'UPDATE users SET name = $1, email = $2, phone_number = $3, password = $4, image_profile = $5 WHERE id = $6',
-      [name, email, phoneNumber, password, imageProfile, id],
+      'INSERT INTO users (name, email, phone_number, password, image_profile) VALUES ($1, $2, $3, $4, $5)',
+      [name, email, phoneNumber, password, imageProfile],
       (error, result) => {
         if (error) {
           reject(error);
@@ -94,7 +94,7 @@ const editUser = (props) => {
 
 // Delete user by id
 const deleteUser = (id) => new Promise((resolve, reject) => {
-  db.query('SELECT * FROM users WHERE id = $1', [id], (err, res) => {
+  db.query('SELECT * FROM users WHERE id = $1', [id], (err) => {
     if (err) {
       reject(err);
     } else {
