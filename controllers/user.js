@@ -62,8 +62,9 @@ const getUserRecipe = async (req, res) => {
 const registerUser = async (req, res) => {
   try {
     const {
-      name, email, phoneNumber, password, imageProfile,
+      name, email, phoneNumber, password,
     } = req.body;
+    const imageProfile = req.file.path;
     const checkUserEmail = await model.getUserEmail(email);
     if (checkUserEmail.rowCount === 1) {
       res.send('email already exist');
