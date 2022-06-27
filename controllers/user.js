@@ -68,8 +68,6 @@ const registerUser = async (req, res) => {
     const checkUserEmail = await model.getUserEmail(email);
     if (checkUserEmail.rowCount === 1) {
       res.send('email already exist');
-    } else if (name === '' || email === '' || phoneNumber === '' || password === '') {
-      res.status(400).send('Name, email, phoneNumber, password must be fullfiled');
     } else {
       await model.registerUser({
         name,
@@ -78,6 +76,7 @@ const registerUser = async (req, res) => {
         password,
         imageProfile,
       });
+      console.log(req.body);
       res.send({
         message: 'user added',
         data: {
