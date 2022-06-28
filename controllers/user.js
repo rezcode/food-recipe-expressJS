@@ -1,5 +1,8 @@
 /* eslint-disable radix */
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const model = require('../models/user');
+require('dotenv').config();
 
 // Get All Users
 const getAllUser = async (req, res) => {
@@ -67,7 +70,8 @@ const registerUser = async (req, res) => {
     const imageProfile = req.file.path;
     const checkUserEmail = await model.getUserEmail(email);
     if (checkUserEmail.rowCount === 1) {
-      res.send('email already exist');
+      // res.send('email already exist');
+      throw new Error('email already exist');
     } else {
       await model.registerUser({
         name,
@@ -76,7 +80,6 @@ const registerUser = async (req, res) => {
         password,
         imageProfile,
       });
-      console.log(req.body);
       res.send({
         message: 'user added',
         data: {
@@ -85,7 +88,32 @@ const registerUser = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(400).send('Something wrong, register fail!');
+    res.status(400).send(error.message);
+  }
+};
+
+// Login user
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const checkEmail = await model.getUserEmail(email);
+
+    if (checkEmail?.rowCount) {
+      const checkPassword = bcrypt.compareSync(
+        password,
+        checkEmail?.rows[0].password,
+      );
+      console.log(checkEmail?.rows[0].password, password);
+      if (checkPassword) {
+        const token = jwt.sign(checkEmail?.rows[0], `${process.env.DB_TOKENKEY}`);
+        res.status[200].send(token);
+      } else {
+        console.log(checkPassword);
+        res.status(401).send('password tidak sesuai');
+      }
+    }
+  } catch (error) {
+    res.status(400).send({ message: `${error.message} Login failed` });
   }
 };
 
@@ -136,4 +164,5 @@ module.exports = {
   editUser,
   deleteUser,
   getUserRecipe,
+  login,
 };
