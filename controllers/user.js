@@ -1,19 +1,39 @@
 /* eslint-disable radix */
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const model = require('../models/user');
-require('dotenv').config();
+const model = require("../models/user");
+require("dotenv").config();
 
 // Get All Users
 const getAllUser = async (req, res) => {
   try {
-    const getData = await model.getAllUser();
-    res.send({
-      data: getData.rows,
-      totalData: getData.rowCount,
-    });
+    const page = req.query.page;
+    const limit = req.query.limit;
+
+    if (page <= 0 || limit <= 0) {
+      throw new Error("incorrect page or limit value");
+    }
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const data = await model.getAllUser();
+    const paginationResult = data.rows.slice(startIndex, endIndex);
+
+    if (paginationResult.length === 0) {
+      const getData = await model.getAllUser();
+      if (getData.rows.length === 0) {
+        res.send({ message: "no data" });
+      } else {
+        res.send({
+          message: "Success",
+          data: getData.rows,
+          totalData: getData.rowCount,
+        });
+      }
+    } else {
+      res.send({ data: paginationResult, totalData: paginationResult.length });
+    }
   } catch (error) {
-    res.status(400).send('Something wrong, get all users fail!');
+    res.status(400).send(error.message);
   }
 };
 
@@ -24,14 +44,15 @@ const getUserDetail = async (req, res) => {
     const getData = await model.getUserDetail(id);
 
     if (getData.rows.length === 0) {
-      res.send('user not found');
+      res.send("user not found");
     } else {
       res.send({
-        message: 'Successfully retrieved data', data: getData.rows,
+        message: "Successfully retrieved data",
+        data: getData.rows,
       });
     }
   } catch (error) {
-    res.status(400).send('Something wrong, get profile fail!');
+    res.status(400).send("Something wrong, get profile fail!");
   }
 };
 
@@ -40,11 +61,15 @@ const getUserEmail = async (req, res) => {
   try {
     const { email } = req.body;
     const getData = await model.getUserEmail(email);
-    res.send({
-      data: getData.rows,
-    });
+    if (getData.rows.length === 0) {
+      res.send("Users not found");
+    } else {
+      res.send({
+        data: getData.rows,
+      });
+    }
   } catch (error) {
-    res.status(400).send('Something wrong, get user email fail!');
+    res.status(400).send("Something wrong, get user email fail!");
   }
 };
 
@@ -57,63 +82,7 @@ const getUserRecipe = async (req, res) => {
       data: getData.rows,
     });
   } catch (error) {
-    res.status(400).send('Something wrong, get user recipe fail!');
-  }
-};
-
-// register user
-const registerUser = async (req, res) => {
-  try {
-    const {
-      name, email, phoneNumber, password,
-    } = req.body;
-    const imageProfile = req.file.path;
-    const checkUserEmail = await model.getUserEmail(email);
-    if (checkUserEmail.rowCount === 1) {
-      // res.send('email already exist');
-      throw new Error('email already exist');
-    } else {
-      await model.registerUser({
-        name,
-        email,
-        phoneNumber,
-        password,
-        imageProfile,
-      });
-      res.send({
-        message: 'user added',
-        data: {
-          name, email, phoneNumber, password, imageProfile,
-        },
-      });
-    }
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
-};
-
-// Login user
-const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const checkEmail = await model.getUserEmail(email);
-
-    if (checkEmail?.rowCount) {
-      const checkPassword = bcrypt.compareSync(
-        password,
-        checkEmail?.rows[0].password,
-      );
-      console.log(checkEmail?.rows[0].password, password);
-      if (checkPassword) {
-        const token = jwt.sign(checkEmail?.rows[0], `${process.env.DB_TOKENKEY}`);
-        res.status[200].send(token);
-      } else {
-        console.log(checkPassword);
-        res.status(401).send('password tidak sesuai');
-      }
-    }
-  } catch (error) {
-    res.status(400).send({ message: `${error.message} Login failed` });
+    res.status(400).send("Something wrong, get user recipe fail!");
   }
 };
 
@@ -121,9 +90,7 @@ const login = async (req, res) => {
 const editUser = async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const {
-      name, email, phoneNumber, password, imageProfile,
-    } = req.body;
+    const { name, email, phoneNumber, password, imageProfile } = req.body;
 
     await model.editUser({
       id,
@@ -135,7 +102,7 @@ const editUser = async (req, res) => {
     });
     res.send({ message: `edit ${name} success` });
   } catch (error) {
-    res.status(400).send('Something wrong, edit user fail!');
+    res.status(400).send("Something wrong, edit user fail!");
   }
 };
 
@@ -149,10 +116,10 @@ const deleteUser = async (req, res) => {
         message: `User id ${id} Deleted`,
       });
     } else {
-      res.status(404).send('user not found');
+      res.status(404).send("user not found");
     }
   } catch (error) {
-    res.status(400).send('Something wrong, delete user failed!');
+    res.status(400).send("Something wrong, delete user failed!");
   }
 };
 
@@ -160,9 +127,7 @@ module.exports = {
   getAllUser,
   getUserDetail,
   getUserEmail,
-  registerUser,
   editUser,
   deleteUser,
   getUserRecipe,
-  login,
 };

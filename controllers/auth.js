@@ -1,7 +1,6 @@
-const model = require("../models/user");
-const jwt = require("jsonwebtoken");
+const modelAuth = require("../models/auth");
+const modelUser = require("../models/user");
 const bcrypt = require("bcrypt");
-// const {  }
 
 const register = async (req, res) => {
   try {
@@ -9,19 +8,20 @@ const register = async (req, res) => {
     const imageProfile = req.file.path;
     const saltPassword = await bcrypt.genSaltSync(15);
     const hashPassword = await bcrypt.hash(password, saltPassword);
-    const checkUserEmail = await model.getUserEmail(email);
-
+    const checkUserEmail = await modelUser.getUserEmail(email);
     if (checkUserEmail.rowCount === 1) {
       throw new Error("email already exist");
+    } else if (Object.values(req.body).includes("")) {
+      res.status(401).send("All forms must be filled");
     } else {
-      await model.registerUser({
+      await modelAuth.registerUser({
         name,
         email,
         phoneNumber,
         password: hashPassword,
         imageProfile,
       });
-      res.json({
+      res.send({
         message: "Register user successfully",
       });
     }
@@ -33,7 +33,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const users = await model.getUserEmail(email);
+    const users = await modelUser.getUserEmail(email);
     if (users.rows.length === 0)
       return res.status(401).send({ error: "incorrect email" });
 
@@ -45,7 +45,11 @@ const login = async (req, res) => {
     if (!validPassword) {
       return res.status(401).send({ error: "incorrect password" });
     } else {
-      return res.status(200).send("Login successfully");
+      const jwt = require("jsonwebtoken");
+      const token = jwt.sign(users.rows[0], process.env.SECRET_KEY, {
+        expiresIn: "24h",
+      });
+      return res.status(200).send(token);
     }
   } catch (error) {
     res.status(400).send({ message: error.message });

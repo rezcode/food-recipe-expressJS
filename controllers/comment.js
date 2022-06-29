@@ -1,4 +1,4 @@
-const model = require('../models/comment');
+const model = require("../models/comment");
 
 const getRecipeComment = async (req, res) => {
   try {
@@ -9,17 +9,13 @@ const getRecipeComment = async (req, res) => {
       data: getData.rows,
     });
   } catch (error) {
-    res.status(400).send('Something wrong, get recipe comment fail!');
+    res.status(400).send("Something wrong, get recipe comment fail!");
   }
 };
 
 const addCommentRecipe = async (req, res) => {
   try {
-    const {
-      comment,
-      idRecipe,
-      idUser,
-    } = req.body;
+    const { comment, idRecipe, idUser } = req.body;
     await model.addCommentRecipe({
       comment,
       idRecipe,
@@ -29,7 +25,7 @@ const addCommentRecipe = async (req, res) => {
       message: `recipe id ${idRecipe} commended by user id ${idUser} successfully added`,
     });
   } catch (error) {
-    res.status(400).send('Something wrong, add comment failed');
+    res.status(400).send("Something wrong, add comment failed");
   }
 };
 
