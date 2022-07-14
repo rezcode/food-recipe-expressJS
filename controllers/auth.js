@@ -5,14 +5,19 @@ const bcrypt = require("bcrypt");
 const register = async (req, res) => {
   try {
     const { name, email, phoneNumber, password } = req.body;
-    const imageProfile = req.file.path;
+    const imageProfile = "public/avatar.png";
     const saltPassword = await bcrypt.genSaltSync(15);
     const hashPassword = await bcrypt.hash(password, saltPassword);
     const checkUserEmail = await modelUser.getUserEmail(email);
     if (checkUserEmail.rowCount === 1) {
       throw new Error("email already exist");
-    } else if (Object.values(req.body).includes("")) {
-      res.status(401).send("All forms must be filled");
+    } else if (
+      name === "" ||
+      email === "" ||
+      phoneNumber === "" ||
+      password === ""
+    ) {
+      res.status(401).send("All form input must be filled");
     } else {
       await modelAuth.registerUser({
         name,
@@ -49,7 +54,9 @@ const login = async (req, res) => {
       const token = jwt.sign(users.rows[0], process.env.SECRET_KEY, {
         expiresIn: "24h",
       });
-      return res.status(200).send(token);
+      return res
+        .status(200)
+        .send({ message: "success", data: users?.rows[0], token });
     }
   } catch (error) {
     res.status(400).send({ message: error.message });

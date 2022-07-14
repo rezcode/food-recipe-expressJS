@@ -22,6 +22,8 @@ app.use(bodyparser.json());
 // parse x-www-form-urlencoded
 app.use(bodyparser.urlencoded({ extended: false }));
 
+app.use(express.static("public"));
+
 // define all Routes
 app.use("/users", userRoute);
 app.use("/recipes", recipeRoute);
