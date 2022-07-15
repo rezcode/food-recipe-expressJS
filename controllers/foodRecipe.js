@@ -1,15 +1,42 @@
-const model = require('../models/foodRecipe');
+const model = require("../models/foodRecipe");
 
 // Get All Recipes
 const getAllRecipes = async (req, res) => {
   try {
-    const getData = await model.getAllRecipes();
-    res.send({
-      data: getData.rows,
-      totalData: getData.rowCount,
-    });
+    const page = req.query.page;
+    const limit = req.query.limit;
+
+    if (page <= 0 || limit <= 0) {
+      throw new Error("incorrect page or limit value");
+    }
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const data = await model.getAllRecipes();
+    const paginationResult = data.rows.slice(startIndex, endIndex);
+
+    if (paginationResult.length === 0) {
+      const getData = await model.getAllRecipes();
+      if (getData.rows.length === 0) {
+        res.send({ message: "no data" });
+      } else {
+        res.send({
+          message: "Success",
+          data: getData.rows,
+          totalData: getData.rowCount,
+        });
+      }
+    } else {
+      res.send({ data: paginationResult, totalData: paginationResult.length });
+    }
+    // const getData = await model.getAllRecipes();
+    // res.send({
+    //   data: getData.rows,
+    //   totalData: getData.rowCount,
+    // });
   } catch (error) {
-    res.status(400).send('Something wrong, get all recipes failed!');
+    res.status(400).send("Something wrong, get all recipes failed!");
   }
 };
 
@@ -20,14 +47,14 @@ const getRecipeDetail = async (req, res) => {
     const getData = await model.getRecipeDetail(id);
 
     if (getData.rows.length === 0) {
-      res.status(400).send('Food not found');
+      res.status(400).send("Food not found");
     } else {
       res.send({
         data: getData.rows,
       });
     }
   } catch (error) {
-    res.status(400).send('Something wrong, get recipe detail failed!');
+    res.status(400).send("Something wrong, get recipe detail failed!");
   }
 };
 
@@ -40,7 +67,7 @@ const getRecentRecipe = async (req, res) => {
       totalData: getData.rowCount,
     });
   } catch (error) {
-    res.status(400).send('Something wrong, get limit 5 recent recipe railed!');
+    res.status(400).send("Something wrong, get limit 5 recent recipe railed!");
   }
 };
 
@@ -54,16 +81,15 @@ const getRecipeTitle = async (req, res) => {
       data: getData.rows,
     });
   } catch (error) {
-    res.status(400).send('Something wrong, get recipe title failed!');
+    res.status(400).send("Something wrong, get recipe title failed!");
   }
 };
 
 // Create New Recipe
 const addRecipe = async (req, res) => {
   try {
-    const {
-      title, ingredients, foodVideo, foodImage,
-    } = req.body;
+    const { title, ingredients, foodVideo } = req.body;
+    const foodImage = req.file.path;
     const id = parseInt(req.body.userId, 10);
     await model.addRecipe({
       title,
@@ -75,11 +101,15 @@ const addRecipe = async (req, res) => {
     res.send({
       message: `${title} recipe successfully added`,
       data: {
-        title, ingredients, foodVideo, foodImage, id,
+        title,
+        ingredients,
+        foodVideo,
+        foodImage,
+        id,
       },
     });
   } catch (error) {
-    res.status(400).send('Something wrong, add recipe failed!');
+    res.status(400).send("Something wrong, add recipe failed!");
   }
 };
 
@@ -93,7 +123,7 @@ const deleteRecipe = async (req, res) => {
       message: `recipe id ${id} successfully deleted`,
     });
   } catch (error) {
-    res.status(400).send('Something wrong, delete recipe failed!');
+    res.status(400).send("Something wrong, delete recipe failed!");
   }
 };
 
@@ -101,9 +131,7 @@ const deleteRecipe = async (req, res) => {
 const editRecipe = async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const {
-      title, ingredients, foodVideo, foodImage,
-    } = req.body;
+    const { title, ingredients, foodVideo, foodImage } = req.body;
 
     await model.editRecipe({
       id,
@@ -114,7 +142,7 @@ const editRecipe = async (req, res) => {
     });
     res.send({ message: `edit ${title} recipe success` });
   } catch (error) {
-    res.status(400).send('Something wrong, edit recipe failed!');
+    res.status(400).send("Something wrong, edit recipe failed!");
   }
 };
 

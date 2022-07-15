@@ -1,10 +1,11 @@
-const Router = require('express').Router();
-const controller = require('../controllers/comment');
+const Router = require("express").Router();
+const controller = require("../controllers/comment");
+const middleware = require("../middleware/verifyToken");
 
 // Get Comment by Recipe
-Router.get('/recipe', controller.getRecipeComment);
+Router.get("/recipe/:id", controller.getRecipeComment);
 
 // Add comment recipe by user
-Router.post('/add', controller.addCommentRecipe);
+Router.post("/add", middleware.verifyToken, controller.addCommentRecipe);
 
 module.exports = Router;
