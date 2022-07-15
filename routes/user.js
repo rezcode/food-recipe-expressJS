@@ -12,7 +12,7 @@ Router.get("/:id", middleware.verifyToken, controller.getUserDetail);
 Router.get("/find/email", middleware.verifyToken, controller.getUserEmail);
 
 // Get User Recipe
-Router.get("/find/recipe", controller.getUserRecipe);
+Router.get("/find/recipe/:id", controller.getUserRecipe);
 
 // Edit user
 Router.patch("/:id", middleware.verifyToken, controller.editUser);

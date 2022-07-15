@@ -76,13 +76,11 @@ const getUserEmail = async (req, res) => {
 // Get User Recipe
 const getUserRecipe = async (req, res) => {
   try {
-    const id = parseInt(req.body.id, 10);
+    const id = parseInt(req.params.id, 10);
     const getData = await model.getUserRecipe(id);
-    res.send({
-      data: getData.rows,
-    });
+    res.send(getData.rows);
   } catch (error) {
-    res.status(400).send("Something wrong, get user recipe fail!");
+    res.status(400).send(error.message);
   }
 };
 

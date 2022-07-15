@@ -30,6 +30,10 @@ app.use("/recipes", recipeRoute);
 app.use("/comments", commentRoute);
 app.use("/auth", authRoute);
 
+// app.use("*", (req, res) => {
+//   res.send("Sukses");
+// });
+
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
 });

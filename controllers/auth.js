@@ -39,7 +39,6 @@ const login = async (req, res) => {
       const users = await modelUser.getUserEmail(email);
       if (users.rows.length === 0)
         return res.status(401).send({ error: "incorrect email" });
-
       // Password check
       const validPassword = await bcrypt.compare(
         password,
