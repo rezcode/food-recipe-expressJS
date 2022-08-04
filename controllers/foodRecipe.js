@@ -40,6 +40,23 @@ const getAllRecipes = async (req, res) => {
   }
 };
 
+const getPopularRecipes = async (req, res) => {
+  try {
+    const getData = await model.getPopularRecipes();
+    res.send({
+      data: getData.rows,
+      totalData: getData.rowCount,
+    });
+    if (getData?.rowCount.length === 0) {
+      return res.status(401).send("Not found");
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "failed get popular recipes", error: error.message });
+  }
+};
+
 // Get Recipes Detail by id
 const getRecipeDetail = async (req, res) => {
   try {
@@ -88,28 +105,29 @@ const getRecipeTitle = async (req, res) => {
 // Create New Recipe
 const addRecipe = async (req, res) => {
   try {
-    const { title, ingredients, foodVideo } = req.body;
+    const { title, ingredients, id_category, id_user } = req.body;
     const foodImage = req.file.path;
-    const id = parseInt(req.body.userId, 10);
     await model.addRecipe({
       title,
       ingredients,
-      foodVideo,
       foodImage,
-      id,
+      id_user,
+      id_category,
     });
     res.send({
       message: `${title} recipe successfully added`,
       data: {
         title,
         ingredients,
-        foodVideo,
         foodImage,
-        id,
+        id_user,
+        id_category,
       },
     });
   } catch (error) {
-    res.status(400).send("Something wrong, add recipe failed!");
+    res
+      .status(400)
+      .send({ message: "failed add recipe", error: error.message });
   }
 };
 
@@ -148,6 +166,7 @@ const editRecipe = async (req, res) => {
 
 module.exports = {
   getAllRecipes,
+  getPopularRecipes,
   addRecipe,
   deleteRecipe,
   getRecipeDetail,

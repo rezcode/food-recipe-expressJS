@@ -12,10 +12,14 @@ const storage = multer.diskStorage({
   },
 });
 
+// ${Date.now()}_${Math.random()}_${file.originalname}
+
 const upload = multer({ storage });
 
 // Get All Recipes
 Router.get("/", controller.getAllRecipes);
+
+Router.get("/popular", controller.getPopularRecipes);
 
 // Get Recipe Detail
 Router.get("/:id", controller.getRecipeDetail);

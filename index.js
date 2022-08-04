@@ -4,6 +4,7 @@ const port = 8000;
 const bodyparser = require("body-parser");
 const helmet = require("helmet");
 const cors = require("cors");
+const path = require("path");
 
 // import all routes
 const userRoute = require("./routes/user");
@@ -22,7 +23,8 @@ app.use(bodyparser.json());
 // parse x-www-form-urlencoded
 app.use(bodyparser.urlencoded({ extended: false }));
 
-app.use(express.static("public"));
+// app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 // define all Routes
 app.use("/users", userRoute);

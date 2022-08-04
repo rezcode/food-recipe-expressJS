@@ -12,11 +12,30 @@ const getAllRecipes = () =>
     });
   });
 
-// Get 5 recent recipe
+// Get 6 recent recipe
 const getRecentRecipe = () =>
   new Promise((resolve, reject) => {
     db.query(
       "SELECT * FROM food_recipe ORDER BY id DESC LIMIT 6",
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+
+// Get Popular Recipe
+const getPopularRecipes = () =>
+  new Promise((resolve, reject) => {
+    db.query(
+      `SELECT A.id_recipe, B.title, B.ingredients, B.food_image, C.category, COUNT(*) AS total FROM likes A
+      INNER JOIN food_recipe B ON A.id_recipe = B.id 
+      INNER JOIN category_recipe C ON B.id_category = C.id
+      GROUP BY A.id_recipe, B.title, B.ingredients, B.food_image, C.category 
+      ORDER BY total DESC LIMIT 6`,
       (error, result) => {
         if (error) {
           reject(error);
@@ -61,11 +80,11 @@ const getRecipeTitle = (title) =>
 
 // Create new Recipe
 const addRecipe = (props) => {
-  const { title, ingredients, foodVideo, foodImage, id } = props;
+  const { title, ingredients, foodImage, id_user, id_category } = props;
   return new Promise((resolve, reject) => {
     db.query(
-      "INSERT INTO food_recipe (title, ingredients, food_video, food_image, user_id) VALUES ($1, $2, $3, $4, $5)",
-      [title, ingredients, foodVideo, foodImage, id],
+      "INSERT INTO food_recipe (title, ingredients, food_image, user_id, id_category) VALUES ($1, $2, $3, $4, $5)",
+      [title, ingredients, foodImage, id_user, id_category],
       (error, result) => {
         if (error) {
           reject(error);
@@ -107,6 +126,7 @@ const editRecipe = (props) => {
 
 module.exports = {
   getAllRecipes,
+  getPopularRecipes,
   getRecipeDetail,
   addRecipe,
   deleteRecipe,
