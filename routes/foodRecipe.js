@@ -1,6 +1,7 @@
 const Router = require("express").Router();
 const controller = require("../controllers/foodRecipe");
 const middleware = require("../middleware/verifyToken");
+const multerMiddleware = require("../middleware/multer");
 const multer = require("multer");
 
 const storage = multer.diskStorage({
@@ -70,6 +71,13 @@ Router.post(
   upload.single("foodImage"),
   middleware.verifyToken,
   controller.addRecipe
+);
+
+Router.post(
+  "/cloudinary",
+  middleware.verifyToken,
+  multerMiddleware.single("foodImage"),
+  controller.addNewRecipe
 );
 
 // Delete Recipe by id

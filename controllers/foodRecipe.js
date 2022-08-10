@@ -1,4 +1,5 @@
 const model = require("../models/foodRecipe");
+const cloudinary = require("../middleware/cloudinary");
 
 // Get All Recipes
 const getAllRecipes = async (req, res) => {
@@ -187,35 +188,6 @@ const getVideoRecipe = async (req, res) => {
       message: "get all video by recipe failed",
       error: error.message,
     });
-  }
-};
-
-// Create New Recipe
-const addRecipe = async (req, res) => {
-  try {
-    const { title, ingredients, id_category, id_user } = req.body;
-    const foodImage = req.file.path;
-    await model.addRecipe({
-      title,
-      ingredients,
-      foodImage,
-      id_user,
-      id_category,
-    });
-    res.send({
-      message: `${title} recipe successfully added`,
-      data: {
-        title,
-        ingredients,
-        foodImage,
-        id_user,
-        id_category,
-      },
-    });
-  } catch (error) {
-    res
-      .status(400)
-      .send({ message: "add recipe failed", error: error.message });
   }
 };
 
@@ -408,6 +380,64 @@ const getMySaveRecipe = async (req, res) => {
   }
 };
 
+// Create New Recipe
+const addRecipe = async (req, res) => {
+  try {
+    const { title, ingredients, id_category, id_user } = req.body;
+    const foodImage = req.file.path;
+    await model.addRecipe({
+      title,
+      ingredients,
+      foodImage,
+      id_user,
+      id_category,
+    });
+    res.send({
+      message: `${title} recipe successfully added`,
+      data: {
+        title,
+        ingredients,
+        foodImage,
+        id_user,
+        id_category,
+      },
+    });
+  } catch (error) {
+    res
+      .status(400)
+      .send({ message: "add recipe failed", error: error.message });
+  }
+};
+
+const addNewRecipe = async (req, res) => {
+  try {
+    const { title, ingredients, id_category, id_user } = req.body;
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const foodImage = result?.url;
+    await model.addRecipe({
+      title,
+      ingredients,
+      foodImage,
+      id_user,
+      id_category,
+    });
+    res.send({
+      message: `${title} recipe successfully added`,
+      data: {
+        title,
+        ingredients,
+        foodImage,
+        id_user,
+        id_category,
+      },
+    });
+  } catch (error) {
+    res
+      .status(400)
+      .send({ message: "add recipe failed", error: error.message });
+  }
+};
+
 module.exports = {
   getAllRecipes,
   getAllPopularRecipe,
@@ -429,4 +459,5 @@ module.exports = {
   getMyRecipe,
   getMyLikeRecipe,
   getMySaveRecipe,
+  addNewRecipe,
 };
