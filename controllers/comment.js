@@ -5,11 +5,22 @@ const getRecipeComment = async (req, res) => {
     const id = parseInt(req.params.id, 10);
     const getData = await model.getRecipeComment(id);
 
-    res.send({
-      data: getData.rows,
-    });
+    if (getData.rows.length > 0) {
+      res.send({
+        message: "success",
+        data: getData.rows,
+      });
+    } else {
+      res.send({
+        message: "No comment yet",
+        data: getData.rows,
+      });
+    }
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({
+      message: "Something wrong, get comment failed!",
+      error: error.message,
+    });
   }
 };
 
