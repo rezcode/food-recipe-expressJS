@@ -2,20 +2,6 @@ const Router = require("express").Router();
 const controller = require("../controllers/foodRecipe");
 const middleware = require("../middleware/verifyToken");
 const multerMiddleware = require("../middleware/multer");
-const multer = require("multer");
-
-const storage = multer.diskStorage({
-  destination(req, file, callback) {
-    callback(null, "./public/recipeAsset/images");
-  },
-  filename(req, file, callback) {
-    callback(null, `${Date.now()}_${Math.random()}_${file.originalname}`);
-  },
-});
-
-// ${Date.now()}_${Math.random()}_${file.originalname}
-
-const upload = multer({ storage });
 
 // Get All Recipes
 Router.get("/", controller.getAllRecipes);
@@ -65,16 +51,8 @@ Router.get("/my/like/:id", middleware.verifyToken, controller.getMyLikeRecipe);
 
 Router.get("/my/save/:id", middleware.verifyToken, controller.getMySaveRecipe);
 
-// Add New Recipe
 Router.post(
   "/add",
-  upload.single("foodImage"),
-  middleware.verifyToken,
-  controller.addRecipe
-);
-
-Router.post(
-  "/cloudinary",
   middleware.verifyToken,
   multerMiddleware.single("foodImage"),
   controller.addNewRecipe

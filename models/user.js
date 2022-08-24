@@ -58,11 +58,11 @@ const getUserRecipe = (id) =>
 
 // Edit User by id
 const editUser = (props) => {
-  const { name, email, phoneNumber, password, imageProfile } = props;
+  const { name, email, phoneNumber, password, id } = props;
   return new Promise((resolve, reject) => {
     db.query(
-      "INSERT INTO users (name, email, phone_number, password, image_profile) VALUES ($1, $2, $3, $4, $5)",
-      [name, email, phoneNumber, password, imageProfile],
+      "UPDATE users SET name = $1, email = $2, phone_number = $3, password = $4 WHERE id = $5 RETURNING *",
+      [name, email, phoneNumber, password, id],
       (error, result) => {
         if (error) {
           reject(error);

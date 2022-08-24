@@ -1,6 +1,8 @@
 /* eslint-disable radix */
 const model = require("../models/user");
 require("dotenv").config();
+const cloudinary = require("../middleware/cloudinary");
+const bcrypt = require("bcrypt");
 
 // Get All Users
 const getAllUser = async (req, res) => {
@@ -88,19 +90,49 @@ const getUserRecipe = async (req, res) => {
 const editUser = async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const { name, email, phoneNumber, password, imageProfile } = req.body;
+    const { name, email, phoneNumber, password } = req.body;
+    const getData = await model.getUserDetail(id);
+    const saltPassword = await bcrypt.genSaltSync(15);
+    const hashPassword = await bcrypt.hash(password, saltPassword);
+    if (getData.rowCount > 0) {
+      let inputName = name || getData?.rows[0]?.name;
+      let inputEmail = email || getData?.rows[0]?.email;
+      let inputPhoneNumber = phoneNumber || getData?.rows[0]?.phone_number;
 
-    await model.editUser({
-      id,
-      name,
-      email,
-      phoneNumber,
-      password,
-      imageProfile,
-    });
-    res.send({ message: `edit ${name} success` });
+      // validation if user does not input password
+      if (password === "") {
+        inputPassword = password || getData?.rows[0]?.password;
+      } else {
+        inputPassword = hashPassword || getData?.rows[0]?.password;
+      }
+
+      const editUserData = await model.editUser({
+        id,
+        name: inputName,
+        email: inputEmail,
+        phoneNumber: inputPhoneNumber,
+        password: inputPassword,
+      });
+
+      // console.log(editUserData);
+      if (editUserData) {
+        res.send({
+          message: "Edit user successfully",
+          data: editUserData.rows[0],
+        });
+      } else {
+        res
+          .send(400)
+          .send({ message: "Edit user failed", error: error.message });
+      }
+    } else {
+      res.status(404).send("Data user not found");
+    }
   } catch (error) {
-    res.status(400).send("Something wrong, edit user fail!");
+    res.status(500).send({
+      message: "Something wrong, edit user failed",
+      error: error.message,
+    });
   }
 };
 

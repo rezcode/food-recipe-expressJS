@@ -380,35 +380,6 @@ const getMySaveRecipe = async (req, res) => {
   }
 };
 
-// Create New Recipe
-const addRecipe = async (req, res) => {
-  try {
-    const { title, ingredients, id_category, id_user } = req.body;
-    const foodImage = req.file.path;
-    await model.addRecipe({
-      title,
-      ingredients,
-      foodImage,
-      id_user,
-      id_category,
-    });
-    res.send({
-      message: `${title} recipe successfully added`,
-      data: {
-        title,
-        ingredients,
-        foodImage,
-        id_user,
-        id_category,
-      },
-    });
-  } catch (error) {
-    res
-      .status(400)
-      .send({ message: "add recipe failed", error: error.message });
-  }
-};
-
 const addNewRecipe = async (req, res) => {
   try {
     const { title, ingredients, id_category, id_user } = req.body;
@@ -443,7 +414,6 @@ module.exports = {
   getAllPopularRecipe,
   getPopularRecipesById,
   getVideoRecipe,
-  addRecipe,
   deleteRecipe,
   getRecipeDetail,
   editRecipe,

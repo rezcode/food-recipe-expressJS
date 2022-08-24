@@ -1,6 +1,7 @@
 const Router = require("express").Router();
 const controller = require("../controllers/user");
 const middleware = require("../middleware/verifyToken");
+const multerMiddleware = require("../middleware/multer");
 
 // Get All Users
 Router.get("/", middleware.verifyToken, controller.getAllUser);
