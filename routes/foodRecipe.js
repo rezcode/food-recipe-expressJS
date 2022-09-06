@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 const Router = require("express").Router();
 const controller = require("../controllers/foodRecipe");
 const middleware = require("../middleware/verifyToken");
@@ -55,6 +56,7 @@ Router.post(
   "/add",
   middleware.verifyToken,
   multerMiddleware.single("foodImage"),
+  // eslint-disable-next-line comma-dangle
   controller.addNewRecipe
 );
 

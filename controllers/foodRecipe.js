@@ -1,11 +1,15 @@
+/* eslint-disable object-curly-newline */
+/* eslint-disable camelcase */
+/* eslint-disable radix */
+/* eslint-disable quotes */
 const model = require("../models/foodRecipe");
 const cloudinary = require("../middleware/cloudinary");
 
 // Get All Recipes
 const getAllRecipes = async (req, res) => {
   try {
-    const page = req.query.page;
-    const limit = req.query.limit;
+    const { page } = req.query;
+    const { limit } = req.query;
 
     if (page <= 0 || limit <= 0) {
       throw new Error("incorrect page or limit value");
@@ -41,6 +45,7 @@ const getAllRecipes = async (req, res) => {
   }
 };
 
+// eslint-disable-next-line consistent-return
 const getAllPopularRecipe = async (req, res) => {
   try {
     const getData = await model.getAllPopularRecipe();
@@ -59,6 +64,7 @@ const getAllPopularRecipe = async (req, res) => {
   }
 };
 
+// eslint-disable-next-line consistent-return
 const getPopularRecipesById = async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
