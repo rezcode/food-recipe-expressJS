@@ -56,7 +56,7 @@ git clone https://github.com/rezcode/food-recipe-expressJS.git
 ```
 npm install
 ```
-- Create new database named `alamanak`
+- Create new database named `mama_recipes`
 - Restore database file in `database/db` using pgadmin4
 
 - <a href="#setup-env-example">Setup .env</a>
@@ -90,9 +90,9 @@ You can view my Postman collection [here](https://documenter.getpostman.com/view
 <img src="https://res.cloudinary.com/dll4afml9/image/upload/v1662476868/screenshots/Screen_Shot_2022-09-06_at_23.06.49_y2fhb8.png" alt="Postman-documentation">
 
 ## Related Project
-:rocket: [`Backend Alamanak`](https://github.com/rezcode/food-recipe-expressJS.git)
+:rocket: [`Backend Mama Recipe`](https://github.com/rezcode/food-recipe-expressJS.git)
 
-:rocket: [`Frontend Alamanak`](https://github.com/rezcode/food-recipe-reactjs.git)
+:rocket: [`Frontend Mama Recipe`](https://github.com/rezcode/food-recipe-reactjs.git)
 
 ## Contact
 
