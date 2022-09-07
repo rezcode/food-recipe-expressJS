@@ -1,3 +1,8 @@
+/* eslint-disable camelcase */
+/* eslint-disable object-curly-newline */
+/* eslint-disable comma-dangle */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable quotes */
 const db = require("../config/db");
 
 // Get All Recipes

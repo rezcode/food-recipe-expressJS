@@ -1,3 +1,6 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable quotes */
 const db = require("../config/db");
 
 const getRecipeComment = (id) =>
