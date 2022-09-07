@@ -96,8 +96,7 @@ const getAllPopularRecipe = () =>
       `SELECT A.id_recipe, B.title, B.ingredients, B.food_image, C.category, COUNT(*) AS total, null As "isLike", null AS "isSave" FROM likes A
       INNER JOIN food_recipe B ON A.id_recipe = B.id 
       INNER JOIN category_recipe C ON B.id_category = C.id
-      GROUP BY A.id_recipe, B.title, B.ingredients, B.food_image, C.category 
-      ORDER BY total DESC LIMIT 6`,
+      GROUP BY A.id_recipe, B.title, B.ingredients, B.food_image, C.category`,
       (error, result) => {
         if (error) {
           reject(error);
