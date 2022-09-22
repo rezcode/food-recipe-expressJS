@@ -35,7 +35,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (email === "" || password === "") {
-      throw new Error("All forms must be filled");
+      return res.status(401).send({ error: "all forms must be fullfiled" });
     } else {
       const users = await modelUser.getUserEmail(email);
       if (users.rows.length === 0)

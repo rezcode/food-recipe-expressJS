@@ -4,7 +4,7 @@ require("dotenv").config();
 const verifyToken = async (req, res, next) => {
   try {
     if (!req.headers.authorization) {
-      return res.status(401).send({ error: "No credentials sent!" });
+      return res.status(401).send("No credentials sent!");
     } else {
       const decoded = jwt.verify(
         req.headers.authorization.split(" ")[1],
@@ -15,7 +15,7 @@ const verifyToken = async (req, res, next) => {
       }
     }
   } catch (error) {
-    return res.status(401).send("invalid token");
+    return res.status(401).send(error.message);
   }
 };
 

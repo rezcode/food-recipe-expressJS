@@ -162,7 +162,7 @@ const getRecentRecipe = async (req, res) => {
 // Get Recipe Detail by title
 const getRecipeTitle = async (req, res) => {
   try {
-    const { title } = req.body;
+    const { title } = req.query;
     const getData = await model.getRecipeTitle(title);
 
     res.send({
